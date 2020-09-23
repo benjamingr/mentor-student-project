@@ -8,10 +8,6 @@ const { check, validationResult } = require('express-validator');
 
 const Student = require('../../models/Student');
 
-// @route    POST api/users
-// @desc     Register Student
-// @access   Public
-router.post('/', validationChecks, studentRegisterstration);
 
 const validationChecks = [
   check('fullName', 'Full Name is required').not().isEmpty(),
@@ -21,6 +17,7 @@ const validationChecks = [
     'Please enter a password with 6 or more characters'
   ).isLength({ min: 6 }),
 ];
+
 
 const studentRegisterstration = async (req, res) => {
   const errors = validationResult(req);
@@ -68,5 +65,10 @@ const studentRegisterstration = async (req, res) => {
     res.status(500).send('Server Error');
   }
 };
+
+// @route    POST api/users
+// @desc     Register Student
+// @access   Public
+router.post('/', validationChecks, studentRegisterstration);
 
 module.exports = router;
