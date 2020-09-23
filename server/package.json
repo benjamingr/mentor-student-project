@@ -5,7 +5,9 @@
   "main": "server.js",
   "scripts": {
     "start": "node server ",
-    "server": "nodemon server "
+    "server": "nodemon server ",
+    "client": "cd .. && cd client && npm start",
+    "dev": "concurrently -n 'server,client' \"nodemon server.js\" \"npm run client\""
   },
   "author": "Connetech",
   "license": "ISC",

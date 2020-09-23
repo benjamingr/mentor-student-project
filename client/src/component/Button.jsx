@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import styled from "styled-components"
 
-cpnst Button= ()=> {
+const Button= ()=> {
     return(
         <button></button>
 

@@ -17,7 +17,7 @@ const validationChecks = [
   ).isLength({ min: 6 }),
 ];
 
-const studentRegistration = async (req, res) => {
+const CreatUser = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
@@ -67,6 +67,7 @@ const studentRegistration = async (req, res) => {
 // @route    POST api/users
 // @desc     Register Student
 // @access   Public
-router.post('/', validationChecks, studentRegistration);
+
+router.post('/register', validationChecks, CreatUser);
 
 module.exports = router;
