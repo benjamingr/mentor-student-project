@@ -1,23 +1,21 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const gravatar = require('gravatar');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const config = require('config');
-const { check, validationResult } = require('express-validator');
+const gravatar = require("gravatar");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const config = require("config");
+const { check, validationResult } = require("express-validator");
 
-const Student = require('../../models/Student');
-
+const Student = require("../../models/Student");
 
 const validationChecks = [
-  check('fullName', 'Full Name is required').not().isEmpty(),
-  check('email', 'Please Include A valid Email').isEmail(),
+  check("fullName", "Full Name is required").not().isEmpty(),
+  check("email", "Please Include A valid Email").isEmail(),
   check(
-    'password',
-    'Please enter a password with 6 or more characters'
+    "password",
+    "Please enter a password with 6 or more characters"
   ).isLength({ min: 6 }),
 ];
-
 
 const studentRegisterstration = async (req, res) => {
   const errors = validationResult(req);
@@ -30,12 +28,12 @@ const studentRegisterstration = async (req, res) => {
     if (student) {
       return res
         .status(400)
-        .json({ errors: [{ msg: 'Student already exists' }] });
+        .json({ errors: [{ msg: "Student already exists" }] });
     }
     const avatar = gravatar.url(email, {
-      s: '200',
-      r: 'pg',
-      d: 'mm',
+      s: "200",
+      r: "pg",
+      d: "mm",
     });
     student = new Student({
       fullName,
@@ -47,13 +45,11 @@ const studentRegisterstration = async (req, res) => {
     student.password = await bcrypt.hash(password, salt);
     await student.save();
     const payload = {
-      student: {
-        id: student.id,
-      },
+      student: { id: student.id },
     };
     jwt.sign(
       payload,
-      config.get('jwtSecret'),
+      config.get("jwtSecret"),
       { expiresIn: 36000000000 },
       (err, token) => {
         if (err) throw err;
@@ -62,13 +58,13 @@ const studentRegisterstration = async (req, res) => {
     );
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('Server Error');
+    res.status(500).send("Server Error");
   }
 };
 
 // @route    POST api/users
 // @desc     Register Student
 // @access   Public
-router.post('/', validationChecks, studentRegisterstration);
+router.post("/", validationChecks, studentRegisterstration);
 
 module.exports = router;
