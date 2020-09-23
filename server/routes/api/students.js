@@ -3,11 +3,10 @@ const router = express.Router();
 const gravatar = require('gravatar');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const config = require('config');
+
 const { check, validationResult } = require('express-validator');
 
 const Student = require('../../models/Student');
-
 
 const validationChecks = [
   check('fullName', 'Full Name is required').not().isEmpty(),
@@ -18,8 +17,7 @@ const validationChecks = [
   ).isLength({ min: 6 }),
 ];
 
-
-const studentRegisterstration = async (req, res) => {
+const studentRegistration = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
@@ -43,8 +41,10 @@ const studentRegisterstration = async (req, res) => {
       avatar,
       password,
     });
+
     const salt = await bcrypt.genSalt(10);
     student.password = await bcrypt.hash(password, salt);
+
     await student.save();
     const payload = {
       student: {
@@ -53,7 +53,7 @@ const studentRegisterstration = async (req, res) => {
     };
     jwt.sign(
       payload,
-      config.get('jwtSecret'),
+      process.env.JWT_SECRET,
       { expiresIn: 36000000000 },
       (err, token) => {
         if (err) throw err;
@@ -69,6 +69,6 @@ const studentRegisterstration = async (req, res) => {
 // @route    POST api/users
 // @desc     Register Student
 // @access   Public
-router.post('/', validationChecks, studentRegisterstration);
+router.post('/', validationChecks, studentRegistration);
 
 module.exports = router;
